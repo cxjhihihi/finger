@@ -8,10 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
-import com.netease.vipnew.common.util.RequestWrapper;
 
 /**
- * 工具�?
+ * 工具�?
  *
  * @author chenmengjiang
  * @version Feb 12, 2015 5:01:58 PM
@@ -38,7 +37,7 @@ public class Utils {
     }
 
     /**
-     * 得到json字符串返�?
+     * 得到json字符串
      * 
      * @param callback
      * @param json
@@ -48,7 +47,24 @@ public class Utils {
         if (StringUtils.isEmpty(callback)) {
             return json.toJSONString();
         }
-        return RequestWrapper.cleanKeywords(callback) + "("
-            + json.toJSONString() + ")";
+        return cleanKeywords(callback) + "(" + json.toJSONString() + ")";
+    }
+
+    public static String cleanKeywords(String value) {
+        if (value == null)
+            return null;
+
+        value = value.replaceAll("(?i)eval\\((.*)\\)", "");
+        value = value.replaceAll(
+            "[\\\"\\\'][\\s]*(?i)javascript:(.*)[\\\"\\\']", "\"\"");
+        value = value.replaceAll("(?i)script", "");
+        value = value.replaceAll("%0a", "").replaceAll("%0d", "");
+        value = value.replaceAll("&", "&amp;").replaceAll("#", "&#35;")
+            .replaceAll("\\\\", "&#92;");
+        value = value.replaceAll("'", "&apos;").replaceAll("\"", "&quot;");
+        value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        value = value.replaceAll("(?i)\\\\x3c", "&lt;").replaceAll(
+            "(?i)\\\\x3e", "&gt;");
+        return value;
     }
 }
